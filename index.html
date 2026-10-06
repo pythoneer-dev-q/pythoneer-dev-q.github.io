@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GandR NeModz | NotAProjects</title>
+    <meta
+      name="description"
+      content="GandR NeModz — переосмысление мобильных приложений. Чистые сборки без мусора, трекеров и лишних ограничений."
+    />
+    <style>
+      :root {
+        --bg: #030704;
+        --bg-soft: #061108;
+        --card: rgba(6, 22, 10, 0.76);
+        --card-solid: #091a0d;
+        --text: #f1fbf3;
+        --muted: #809985;
+        --line: rgba(34, 197, 94, 0.14);
+
+        /* Основной тёмно-зелёный градиент и акценты */
+        --accent-dark: #002803;
+        --accent: #22c55e;
+        --accent-glow: #00ff41;
+        --accent-2: #15803d;
+        --accent-soft: rgba(34, 197, 94, 0.14);
+
+        /* Цвета фирменного логотипа */
+        --brand-red: #ef4444;
+        --brand-orange: #f59e0b;
+
+        --card-shadow: none;
+        --radius: 24px;
+        --container: 1180px;
+      }
+
+      [data-theme="light"] {
+        --bg: #f5f8f5;
+        --bg-soft: #ffffff;
+        --card: rgba(255, 255, 255, 0.92);
+        --card-solid: #ffffff;
+        --text: #0d1710;
+        --muted: #4e6153;
+        --line: rgba(0, 40, 3, 0.1);
+        --accent: #15803d;
+        --accent-glow: #16a34a;
+        --accent-2: #166534;
+        --accent-soft: rgba(21, 128, 61, 0.12);
+        --card-shadow: 0 10px 30px rgba(0, 40, 3, 0.05);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-height: 100vh;
+        background: radial-gradient(
+            circle at 50% -10%,
+            rgba(0, 40, 3, 0.85),
+            transparent 45%
+          ),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        overflow-x: hidden;
+        transition: background 0.25s, color 0.25s;
+      }
+
+      [data-theme="light"] body {
+        background: radial-gradient(
+            circle at 50% -10%,
+            rgba(34, 197, 94, 0.2),
+            transparent 50%
+          ),
+          var(--bg);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        outline: none;
+      }
+
+      button {
+        font: inherit;
+        outline: none;
+      }
+
+      .container {
+        width: min(calc(100% - 32px), var(--container));
+        margin: auto;
+      }
+
+      /* ---------------- MATRIX BACKGROUND ---------------- */
+
+      #matrixCanvas {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: -2;
+        opacity: 0.75;
+        transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.6s ease;
+      }
+
+      #matrixCanvas.scrolled-blur {
+        filter: blur(5px);
+        opacity: 0.28;
+      }
+
+      /* ---------------- HEADER ---------------- */
+
+      header {
+        position: fixed;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 12px 0;
+        border-bottom: 1px solid transparent;
+        transition: background 0.25s ease, border-color 0.25s ease, backdrop-filter 0.25s ease;
+      }
+
+      header.scrolled {
+        background: rgba(3, 7, 4, 0.88);
+        backdrop-filter: blur(20px);
+        border-bottom-color: var(--line);
+      }
+
+      [data-theme="light"] header.scrolled {
+        background: rgba(245, 248, 245, 0.88);
+      }
+
+      .nav {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 50px;
+        gap: 12px;
+      }
+
+      /* Брендовый блок */
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        z-index: 2;
+        flex-shrink: 0;
+      }
+
+      .logo-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+
+      .logo-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        object-fit: cover;
+        display: block;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+        box-shadow: 0 4px 16px rgba(0, 255, 65, 0.2);
+        flex-shrink: 0;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+
+      .brand-title {
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+        font-size: 15px;
+      }
+
+      .brand-title span {
+        transition: text-shadow 0.25s ease, color 0.25s ease;
+      }
+
+      .brand-gandr {
+        color: var(--accent);
+      }
+
+      .brand-nemodz {
+        display: inline-flex;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-ne {
+        color: var(--brand-red);
+      }
+
+      .brand-modz {
+        color: var(--brand-orange);
+      }
+
+      /* Подсветка GandR NeModz и аватарки в свои цвета при наведении */
+      .logo-brand:hover .logo-avatar {
+        transform: scale(1.06);
+        border-color: rgba(0, 255, 65, 0.8);
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.6), 0 0 35px rgba(34, 197, 94, 0.35);
+      }
+
+      .logo-brand:hover .brand-gandr {
+        text-shadow: 0 0 14px rgba(34, 197, 94, 0.95), 0 0 25px rgba(0, 255, 65, 0.65);
+      }
+
+      .logo-brand:hover .brand-ne {
+        text-shadow: 0 0 14px rgba(239, 68, 68, 0.95), 0 0 25px rgba(239, 68, 68, 0.65);
+      }
+
+      .logo-brand:hover .brand-modz {
+        text-shadow: 0 0 14px rgba(245, 158, 11, 0.95), 0 0 25px rgba(245, 158, 11, 0.65);
+      }
+
+      [data-theme="light"] .logo-brand:hover .logo-avatar {
+        border-color: rgba(21, 128, 61, 0.7);
+        box-shadow: 0 0 18px rgba(22, 163, 74, 0.5);
+      }
+
+      .brand-divider {
+        color: var(--muted);
+        font-weight: 500;
+        font-size: 13px;
+        user-select: none;
+      }
+
+      /* Ссылка NotAProjects и её подсветка */
+      .brand-sub {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 13px;
+        transition: color 0.25s ease, text-shadow 0.25s ease;
+      }
+
+      .brand-sub:hover {
+        color: var(--text);
+        text-shadow: 0 0 12px currentColor, 0 0 22px rgba(241, 251, 243, 0.6);
+      }
+
+      [data-theme="light"] .brand-sub:hover {
+        color: var(--text);
+        text-shadow: 0 0 10px rgba(13, 23, 16, 0.3);
+      }
+
+      /* Центрированное меню */
+      nav {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      nav a {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.2s;
+        white-space: nowrap;
+      }
+
+      nav a:hover {
+        color: var(--text);
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        z-index: 2;
+        flex-shrink: 0;
+      }
+
+      .icon-btn {
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--line);
+        background: var(--card);
+        color: var(--text);
+        border-radius: 12px;
+        cursor: pointer;
+        backdrop-filter: blur(15px);
+        transition: border-color 0.2s, transform 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .icon-btn svg {
+        width: 22px;
+        height: 22px;
+        display: block;
+        transition: transform 0.3s ease;
+      }
+
+      .icon-btn:hover {
+        border-color: var(--accent);
+        transform: scale(1.04);
+      }
+
+      .icon-btn:hover svg {
+        transform: rotate(20deg);
+      }
+
+      /* ---------------- BUTTONS ---------------- */
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 13px;
+        border: 1px solid transparent;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+        white-space: nowrap;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #22c55e, #15803d);
+        color: #ffffff;
+        box-shadow: 0 8px 25px rgba(34, 197, 94, 0.25);
+      }
+
+      [data-theme="light"] .btn-primary {
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        box-shadow: 0 6px 20px rgba(21, 128, 61, 0.25);
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 12px 35px rgba(34, 197, 94, 0.38);
+      }
+
+      .btn-text-mobile {
+        display: none;
+      }
+
+      /* ---------------- HERO ---------------- */
+
+      .hero {
+        min-height: calc(100vh - 60px);
+        padding: 140px 0 60px;
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .hero-grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.18;
+        pointer-events: none;
+        background-image: linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
+      }
+
+      .hero-glow {
+        position: absolute;
+        width: min(600px, 90vw);
+        height: min(600px, 90vw);
+        border-radius: 50%;
+        left: 50%;
+        top: 25%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+          circle,
+          rgba(34, 197, 94, 0.16) 0%,
+          rgba(0, 40, 3, 0.45) 55%,
+          transparent 80%
+        );
+        filter: blur(80px);
+        pointer-events: none;
+      }
+
+      [data-theme="light"] .hero-glow {
+        background: radial-gradient(
+          circle,
+          rgba(34, 197, 94, 0.18) 0%,
+          transparent 70%
+        );
+      }
+
+      .hero-content {
+        position: relative;
+        text-align: center;
+        max-width: 860px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: clamp(38px, 7vw, 84px);
+        line-height: 1.04;
+        letter-spacing: -0.05em;
+        font-weight: 850;
+      }
+
+      h1 .gradient {
+        background: linear-gradient(110deg, #ffffff 15%, #4ade80 55%, #15803d);
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      [data-theme="light"] h1 .gradient {
+        background: linear-gradient(110deg, #0d1710 10%, #15803d 60%, #166534);
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      .hero-description {
+        max-width: 640px;
+        margin: 24px auto 34px;
+        color: var(--muted);
+        font-size: clamp(15px, 2.5vw, 18px);
+      }
+
+      .hero-actions {
+        display: flex;
+        justify-content: center;
+      }
+
+      /* ---------------- ПЕРЕХОД "О ПРОЕКТЕ" ---------------- */
+
+      .scroll-down-link {
+        margin-top: 55px;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        text-decoration: none;
+        transition: color 0.2s, transform 0.2s;
+        cursor: pointer;
+      }
+
+      .scroll-down-link:hover {
+        color: var(--accent);
+        transform: translateY(2px);
+      }
+
+      .scroll-down-link .arrow-icon {
+        display: grid;
+        place-items: center;
+        color: var(--accent);
+        animation: floatDown 2s infinite ease-in-out;
+      }
+
+      @keyframes floatDown {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(6px);
+        }
+      }
+
+      /* ---------------- SECTIONS ---------------- */
+
+      section {
+        padding: 85px 0;
+      }
+
+      section[id] {
+        scroll-margin-top: 80px;
+      }
+
+      .section-head {
+        max-width: 720px;
+        margin-bottom: 38px;
+      }
+
+      .section-label {
+        color: var(--accent);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: clamp(28px, 4.8vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.045em;
+        margin-bottom: 14px;
+      }
+
+      .section-head p {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      /* ---------------- HISTORY CARD ---------------- */
+
+      .history-card {
+        padding: 34px 32px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--card);
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(15px);
+        max-width: 860px;
+      }
+
+      .history-card p {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .history-card p + p {
+        margin-top: 18px;
+      }
+
+      .history-card strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      /* ---------------- FEATURES (2 КАРТОЧКИ) ---------------- */
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .point {
+        padding: 30px 28px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--card);
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(15px);
+        transition: border-color 0.2s, transform 0.2s;
+      }
+
+      .point:hover {
+        border-color: rgba(34, 197, 94, 0.35);
+        transform: translateY(-2px);
+      }
+
+      .point-icon {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 13px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        margin-bottom: 16px;
+        font-size: 19px;
+      }
+
+      .point h3 {
+        font-size: 20px;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+      }
+
+      .point p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* ---------------- FAQ ---------------- */
+
+      .faq {
+        max-width: 850px;
+      }
+
+      details {
+        border-top: 1px solid var(--line);
+        padding: 20px 0;
+      }
+
+      details:last-child {
+        border-bottom: 1px solid var(--line);
+      }
+
+      summary {
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 650;
+        font-size: 15px;
+        gap: 16px;
+        user-select: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      summary::after {
+        content: "+";
+        color: var(--muted);
+        font-size: 22px;
+        font-weight: 300;
+        display: inline-block;
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+          color 0.2s ease;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      details[open] summary::after {
+        transform: rotate(45deg);
+        color: var(--accent);
+      }
+
+      details.is-closing summary::after {
+        transform: rotate(0deg);
+        color: var(--muted);
+      }
+
+      .faq-content {
+        overflow: hidden;
+      }
+
+      .faq-content p {
+        color: var(--muted);
+        font-size: 14px;
+        max-width: 700px;
+        padding-top: 12px;
+        line-height: 1.6;
+      }
+
+      .faq-link {
+        color: var(--accent);
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.2s, opacity 0.2s;
+      }
+
+      .faq-link:hover {
+        color: var(--accent-glow);
+        opacity: 0.9;
+      }
+
+      [data-theme="light"] .faq-link {
+        color: #15803d;
+      }
+
+      [data-theme="light"] .faq-link:hover {
+        color: #16a34a;
+      }
+
+      /* ---------------- FINALE / CTA ---------------- */
+
+      .finale-section {
+        padding: 45px 0 85px;
+        position: relative;
+        text-align: center;
+      }
+
+      .finale-inner {
+        max-width: 700px;
+        margin: auto;
+      }
+
+      .finale-inner h2 {
+        font-size: clamp(32px, 5.5vw, 58px);
+        margin-bottom: 16px;
+      }
+
+      .finale-inner p {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 30px;
+      }
+
+      /* ---------------- FOOTER ---------------- */
+
+      footer {
+        padding: 32px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 18px;
+      }
+
+      .footer-links a:hover {
+        color: var(--text);
+      }
+
+      /* ---------------- REVEAL ANIMATIONS ---------------- */
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* ---------------- RESPONSIVE (MOBILE) ---------------- */
+
+      @media (max-width: 860px) {
+        nav {
+          display: none;
+        }
+
+        .hero {
+          min-height: auto;
+          padding: 130px 0 60px;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 580px) {
+        .container {
+          width: min(calc(100% - 24px), var(--container));
+        }
+
+        section {
+          padding: 60px 0;
+        }
+
+        section[id] {
+          scroll-margin-top: 72px;
+        }
+
+        .brand-divider,
+        .brand-sub {
+          display: none;
+        }
+
+        .btn-text-full {
+          display: none;
+        }
+
+        .btn-text-mobile {
+          display: inline;
+        }
+
+        .icon-btn {
+          width: 42px;
+          height: 42px;
+        }
+
+        .icon-btn svg {
+          width: 22px;
+          height: 22px;
+        }
+
+        .nav-actions .btn {
+          padding: 0 14px;
+          min-height: 42px;
+          font-size: 13px;
+        }
+
+        .hero-actions .btn {
+          width: 100%;
+        }
+
+        .scroll-down-link {
+          margin-top: 40px;
+          font-size: 16px;
+        }
+
+        .history-card {
+          padding: 24px 20px;
+        }
+
+        .point {
+          padding: 22px 18px;
+        }
+
+        .finale-section {
+          padding: 30px 0 65px;
+        }
+
+        .footer {
+          flex-direction: column;
+          gap: 14px;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- BACKGROUND MATRIX CANVAS (0 & 1) -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- HEADER -->
+    <header id="header">
+      <div class="container nav">
+        <div class="logo">
+          <!-- Группа логотипа и названия GandR NeModz с единой многоцветной подсветкой -->
+          <a class="logo-brand" href="#">
+            <img
+              class="logo-avatar"
+              src="https://i.postimg.cc/Pf4b45gV/Gand-R-Ne-Modz-Avatar.png"
+              alt="GandR NeModz Avatar"
+            />
+            <div class="brand-title">
+              <span class="brand-gandr">GandR</span>
+              <span class="brand-nemodz"><span class="brand-ne">Ne</span><span class="brand-modz">Modz</span></span>
+            </div>
+          </a>
+
+          <span class="brand-divider">|</span>
+
+          <!-- Независимая ссылка на NotAProjects с переходом и подсветкой -->
+          <a
+            class="brand-sub"
+            href="https://not-a-projects.xyz/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >NotAProjects</a>
+        </div>
+
+        <!-- ЦЕНТРИРОВАННЫЕ ВКЛАДКИ -->
+        <nav>
+          <a href="#about">О проекте</a>
+          <a href="#history">История</a>
+          <a href="#features">Преимущества</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button class="icon-btn" id="themeBtn" aria-label="Сменить тему">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 2.5 A 9.5 9.5 0 0 0 12 21.5 Z" fill="currentColor"/>
+            </svg>
+          </button>
+          <a class="btn btn-primary" href="https://t.me/GandR_Modz" target="_blank">
+            <span class="btn-text-full">Перейти в канал</span>
+            <span class="btn-text-mobile">Канал</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+        <div class="container">
+          <div class="hero-content reveal">
+            <h1>
+              Не просто моды,<br />
+              <span class="gradient">а моды с душой</span>
+            </h1>
+            <p class="hero-description">
+              Обычная разблокировка премиума — полезно, но порой мододелы не парятся насчёт чистоты модификации.
+              Если любите порядок — вы попали в правильное место
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="https://t.me/GandR_Modz" target="_blank">
+                Перейти в Telegram-канал →
+              </a>
+            </div>
+
+            <!-- ПЕРЕХОД СО СТРЕЛКОЙ ВНИЗ -->
+            <a href="#about" class="scroll-down-link">
+              <span>О проекте</span>
+              <div class="arrow-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 10l5 5 5-5" />
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT (01) -->
+      <section id="about">
+        <div class="container">
+          <div class="section-head reveal">
+            <div class="section-label">01 · О проекте</div>
+            <h2>
+              О <span class="gradient">проекте</span>
+            </h2>
+            <p>
+              Это уголок для любителей Android-модификаций. Для тех, кто хочет ознакомиться с платной версией продукта и тех, кто ценит отсутствие лишнего, чтобы получить максимально комфортный опыт использования приложения.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTORY (02) -->
+      <section id="history">
+        <div class="container">
+          <div class="section-head reveal">
+            <div class="section-label">02 · История</div>
+            <h2>
+              История <span class="gradient">создания</span>
+            </h2>
+          </div>
+
+          <div class="history-card reveal">
+            <p>
+              Идея появилась ещё в 2024 году. Однако вдохновение появилось ещё раньше. Это был долгий путь, но постараюсь вкратце: когда был популярен редактор видео Kinemaster, я в нём монтировал видео. Меня раздражал водяной знак. Однажды решил загуглить "скачать kinemaster без водяного знака". Зашёл на какой-то сайт, скачал и обрадовался, что теперь нет раздражающей надписи MADE WITH KINEMASTER. Это был первый опыт использования модификации (не считая передачи Майнкрафта по ShareIt в 2014).
+            </p>
+            <p>
+              В один из дней задался вопросом: "А как они это сделали?". Я вдохновился чужими модами и понял, что тоже так хочу. Так, первой моей модификацией на премиум стала утилита Mobizen. Дальше пошло поехало: скачивал чуть ли не всё подряд. С опытом стал больше понимать, как всё работает. Наступил день, который стал ключевым: <strong>26 июня 2024</strong> — я создал Telegram-канал.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES (03) -->
+      <section id="features">
+        <div class="container">
+          <div class="section-head reveal">
+            <div class="section-label">03 · Преимущества</div>
+            <h2>
+              Главные <span class="gradient">преимущества</span>
+            </h2>
+          </div>
+
+          <div class="features-grid">
+            <div class="point reveal">
+              <div class="point-icon">🧹</div>
+              <h3>Чистота</h3>
+              <p>
+                Не только разблокировка платных функций, но и чистка от трекеров, мусора, ненужных кнопок и баннеров, которые могут отвлекать и раздражать
+              </p>
+            </div>
+
+            <div class="point reveal">
+              <div class="point-icon">🛡</div>
+              <h3>Безопасность</h3>
+              <p>
+                Никаких скрытых майнеров и прочих вирусов
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ (04) -->
+      <section id="faq">
+        <div class="container">
+          <div class="section-head reveal">
+            <div class="section-label">04 · FAQ</div>
+            <h2>
+              Вопрос-<span class="gradient">ответ</span>
+            </h2>
+          </div>
+
+          <div class="faq">
+            <details class="reveal">
+              <summary>Почему GandR NeModz, а не просто GandR Modz?</summary>
+              <div class="faq-content">
+                <p>
+                  Приставка "Не" (НеМоды) отражает фишку экосистемы 
+                  "<a href="https://not-a-projects.xyz/" target="_blank" class="faq-link">НеПроектов</a>": 
+                  бесплатно, минималистично и приватно. Объединение с "<a href="https://not-a-projects.xyz/" target="_blank" class="faq-link">НеПроектами</a>" — 
+                  ещё один шаг стать лучше.
+                </p>
+              </div>
+            </details>
+
+            <details class="reveal">
+              <summary>Где выходят релизы и обновления?</summary>
+              <div class="faq-content">
+                <p>
+                  Все файлы публикуются в официальном Telegram-канале проекта 
+                  <a href="https://t.me/GandR_Modz" target="_blank" class="faq-link">GandR NeModz</a>
+                </p>
+              </div>
+            </details>
+
+            <details class="reveal">
+              <summary>Если вы делаете акцент на чистоту, то тогда почему в некоторых ваших модификациях я могу встретить лишние баннеры/пункты?</summary>
+              <div class="faq-content">
+                <p>
+                  Чистота мода — это в первую очередь стабильность и приватность, а не слепое вырезание интерфейса. Если вы где-то видите оставшуюся плашку или пункт, то чаще всего они намертво вшиты в логику экрана, и физическое удаление контейнера гарантированно вызовет краш приложения или перекосит всю вёрстку. В таких спорных местах лучше не рисковать стабильностью, а полностью глушить начинку изнутри (если это какой-нибудь рекламный элемент). В приоритете всегда вырезать навязчивый мусор, пейволлы и телеметрию, не ломая при этом базовый функционал, а мелкую косметику можно подтягивать постепенно от релиза к релизу.
+                </p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINALE -->
+      <section class="finale-section">
+        <div class="container">
+          <div class="finale-inner reveal">
+            <h2>
+              И это только <span class="gradient">начало</span>
+            </h2>
+            <p>
+              GandR NeModz постоянно развивается. Впереди разбор новых приложений, нестандартные патчи и усовершенстование того, что есть. То, что доступно сейчас — далеко не предел возможностей.
+            </p>
+            <a class="btn btn-primary" href="https://t.me/GandR_Modz" target="_blank">
+              Перейти в Telegram-канал →
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container footer">
+        <div>© 2024-2026 GandR NeModz | NotAProjects</div>
+        <div class="footer-links">
+          <a href="#about">О проекте</a>
+          <a href="#history">История</a>
+          <a href="#features">Преимущества</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /* ---------------- MATRIX BACKGROUND (0 & 1) ---------------- */
+      const canvas = document.getElementById("matrixCanvas");
+      const ctx = canvas.getContext("2d");
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      const chars = ["0", "1"];
+      const fontSize = 15;
+      let columns = Math.floor(width / fontSize);
+      let drops = [];
+
+      function initDrops() {
+        columns = Math.floor(width / fontSize);
+        drops = [];
+        for (let i = 0; i < columns; i++) {
+          drops[i] = Math.floor((Math.random() * -height) / fontSize);
+        }
+      }
+      initDrops();
+
+      let lastTime = 0;
+      const fps = 30;
+      const interval = 1000 / fps;
+
+      function drawMatrix(time) {
+        requestAnimationFrame(drawMatrix);
+
+        if (time - lastTime < interval) return;
+        lastTime = time;
+
+        const isLight = document.documentElement.dataset.theme === "light";
+
+        ctx.fillStyle = isLight
+          ? "rgba(245, 248, 245, 0.18)"
+          : "rgba(3, 7, 4, 0.18)";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.font = `${fontSize}px monospace`;
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+
+          if (isLight) {
+            ctx.fillStyle =
+              Math.random() > 0.88 ? "#15803d" : "rgba(21, 128, 61, 0.28)";
+          } else {
+            ctx.fillStyle =
+              Math.random() > 0.88 ? "#00ff41" : "rgba(21, 128, 61, 0.55)";
+          }
+
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+      requestAnimationFrame(drawMatrix);
+
+      window.addEventListener("resize", () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initDrops();
+      });
+
+      /* ---------------- SCROLL EFFECT (BLUR MATRIX & HEADER) ---------------- */
+      const header = document.getElementById("header");
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          const isScrolled = window.scrollY > 25;
+          canvas.classList.toggle("scrolled-blur", isScrolled);
+          header.classList.toggle("scrolled", isScrolled);
+        },
+        { passive: true }
+      );
+
+      /* ---------------- THEME SWITCHER ---------------- */
+      const themeBtn = document.getElementById("themeBtn");
+      const savedTheme = localStorage.getItem("gandr-theme");
+
+      if (savedTheme) {
+        document.documentElement.dataset.theme = savedTheme;
+      }
+
+      themeBtn.addEventListener("click", () => {
+        const current =
+          document.documentElement.dataset.theme === "light" ? "dark" : "light";
+        document.documentElement.dataset.theme = current;
+        localStorage.setItem("gandr-theme", current);
+
+        ctx.fillStyle = current === "light" ? "#f5f8f5" : "#030704";
+        ctx.fillRect(0, 0, width, height);
+      });
+
+      /* ---------------- REVEAL ANIMATIONS ---------------- */
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+
+      document.querySelectorAll(".reveal").forEach((el) => {
+        observer.observe(el);
+      });
+
+      /* ---------------- БЕЗУПРЕЧНЫЙ АККОРДЕОН FAQ ---------------- */
+      document.querySelectorAll(".faq details").forEach((detail) => {
+        const summary = detail.querySelector("summary");
+        const content = detail.querySelector(".faq-content");
+        let isAnimating = false;
+
+        summary.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (isAnimating) return;
+
+          if (detail.open) {
+            isAnimating = true;
+            detail.classList.add("is-closing");
+            const startHeight = content.offsetHeight;
+
+            const anim = content.animate(
+              [
+                { height: `${startHeight}px`, opacity: 1 },
+                { height: "0px", opacity: 0 }
+              ],
+              {
+                duration: 250,
+                easing: "cubic-bezier(0.16, 1, 0.3, 1)"
+              }
+            );
+
+            anim.onfinish = () => {
+              detail.open = false;
+              detail.classList.remove("is-closing");
+              content.style.height = "";
+              content.style.opacity = "";
+              isAnimating = false;
+            };
+          } else {
+            isAnimating = true;
+            detail.open = true;
+            const targetHeight = content.scrollHeight;
+
+            const anim = content.animate(
+              [
+                { height: "0px", opacity: 0 },
+                { height: `${targetHeight}px`, opacity: 1 }
+              ],
+              {
+                duration: 270,
+                easing: "cubic-bezier(0.16, 1, 0.3, 1)"
+              }
+            );
+
+            anim.onfinish = () => {
+              content.style.height = "";
+              content.style.opacity = "";
+              isAnimating = false;
+            };
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
